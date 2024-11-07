@@ -1,7 +1,7 @@
-// index.js
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const fetch = require("node-fetch"); // Required to fetch JSON data from GitHub
 
 const app = express();
 const PORT = 3000;
@@ -22,6 +22,23 @@ app.get("/api/images", (req, res) => {
     const imagePaths = files.map((file) => `/images/${file}`);
     res.json(imagePaths);
   });
+});
+
+// API endpoint to fetch JSON content dynamically from GitHub
+app.get("/api/content", async (req, res) => {
+  try {
+    const response = await fetch(
+      "https://raw.githubusercontent.com/vannekariharini/test/main/data.json"
+    ); // Replace with your GitHub raw URL
+    const jsonData = await response.json();
+
+    // Set cache control to prevent caching of JSON data
+    res.set("Cache-Control", "no-store");
+
+    res.json(jsonData);
+  } catch (error) {
+    res.status(500).send("Failed to fetch JSON data from GitHub.");
+  }
 });
 
 // Start the server
