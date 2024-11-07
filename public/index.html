@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <style>
+        #gallery img {
+            width: 200px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="title">Image Gallery</h1>
+    <p id="description"></p>
+    <p id="about"></p>
+    
+    <div id="gallery"></div>
+
+    <script>
+        // Load text content from content.json
+        fetch('/content.json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('title').innerText = data.title;
+                document.getElementById('description').innerText = data.description;
+                document.getElementById('about').innerText = data.about;
+            })
+            .catch(error => console.error('Error loading text content:', error));
+
+        // Load images from /api/images endpoint
+        fetch('/api/images')
+            .then(response => response.json())
+            .then(images => {
+                const galleryDiv = document.getElementById('gallery');
+                images.forEach(imagePath => {
+                    const img = document.createElement('img');
+                    img.src = imagePath;
+                    img.alt = "Gallery Image";
+                    galleryDiv.appendChild(img);
+                });
+            })
+            .catch(error => console.error('Error loading images:', error));
+    </script>
+</body>
+</html>
